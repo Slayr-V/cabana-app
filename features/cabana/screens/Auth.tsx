@@ -10,8 +10,16 @@ import { jakarta, outfit } from '../type';
 import { FieldLabel, SwatchRow } from '../components/common';
 
 export function AuthScreen() {
-  const { authMode, fName, fEmail, fPass, myColor, setField, finishAuth } = useCabana();
+  const { authMode, fName, fEmail, fPass, myColor, setField, finishAuth, flash } = useCabana();
   const isSignup = authMode === 'signup';
+
+  const submit = () => {
+    if (!fEmail.trim() || !fPass) {
+      flash('Fill in your email and password');
+      return;
+    }
+    finishAuth();
+  };
 
   return (
     <View style={styles.screen}>
@@ -85,11 +93,16 @@ export function AuthScreen() {
         </>
       )}
 
-      <Pressable style={styles.cta} onPress={finishAuth} accessibilityRole="button">
+      <Pressable style={styles.cta} onPress={submit} accessibilityRole="button">
         <Text style={styles.ctaLabel}>{isSignup ? 'Create my account' : 'Log me in'}</Text>
       </Pressable>
 
-      <Pressable style={styles.secondary} onPress={finishAuth} accessibilityRole="button">
+      {/* Phone auth isn't wired up yet — email/password is the one real path. */}
+      <Pressable
+        style={styles.secondary}
+        onPress={() => flash('Phone sign-in is coming soon')}
+        accessibilityRole="button"
+      >
         <Text style={styles.secondaryLabel}>Continue with a phone number</Text>
       </Pressable>
 

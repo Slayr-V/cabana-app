@@ -18,7 +18,14 @@
           "backgroundColor": "#AFB7F7"
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/brand/cabana-logo.jpeg",
+          "color": "#F6F084"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,5 +1,7 @@
-// The crew roster. Anyone still sitting on an unopened invite gets a Nudge
-// button; everyone else just shows what they've claimed.
+// The crew roster. The design's Nudge button targeted an invite still
+// sitting unopened; a real backend only ever has crew who've actually
+// joined, so it's repurposed here for anyone who hasn't claimed anything
+// yet — tapping it sends them a real push, not just a mocked toast.
 
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -9,10 +11,9 @@ import { INK, ink, PILL, WHITE } from '../../theme';
 import { jakarta, outfit } from '../../type';
 
 export function EventCrew() {
-  const { active, myColor, go, flash } = useCabana();
+  const { active, myColor, go, nudge } = useCabana();
 
-  const inCount = active.crew.filter((c) => !c.pending).length;
-  const crewLine = `${inCount} in${active.crew.some((c) => c.pending) ? ', 1 still thinking about it' : ''}`;
+  const crewLine = `${active.crew.length} in`;
 
   return (
     <View style={styles.screen}>
@@ -20,28 +21,31 @@ export function EventCrew() {
       <Text style={styles.subline}>{crewLine}</Text>
 
       <View style={styles.rows}>
-        {active.crew.map((c, i) => (
-          <View key={`${c.short}${i}`} style={styles.row}>
-            <View
-              style={[styles.avatar, { backgroundColor: c.short === 'You' ? myColor : c.color }]}
-            >
-              <Text style={styles.initial}>{c.initial}</Text>
-            </View>
-            <View style={styles.rowBody}>
-              <Text style={styles.name}>{c.name}</Text>
-              <Text style={styles.sub}>{c.sub}</Text>
-            </View>
-            {c.pending && (
-              <Pressable
-                style={styles.nudge}
-                onPress={() => flash('Nudge sent 📣')}
-                accessibilityRole="button"
+        {active.crew.map((c) => {
+          const needsNudge = c.role !== 'host' && (c.tag === 'in' || c.tag === 'new 👋');
+          return (
+            <View key={c.id} style={styles.row}>
+              <View
+                style={[styles.avatar, { backgroundColor: c.short === 'You' ? myColor : c.color }]}
               >
-                <Text style={styles.nudgeLabel}>Nudge</Text>
-              </Pressable>
-            )}
-          </View>
-        ))}
+                <Text style={styles.initial}>{c.initial}</Text>
+              </View>
+              <View style={styles.rowBody}>
+                <Text style={styles.name}>{c.name}</Text>
+                <Text style={styles.sub}>{c.sub}</Text>
+              </View>
+              {needsNudge && (
+                <Pressable
+                  style={styles.nudge}
+                  onPress={() => nudge(c.id)}
+                  accessibilityRole="button"
+                >
+                  <Text style={styles.nudgeLabel}>Nudge</Text>
+                </Pressable>
+              )}
+            </View>
+          );
+        })}
       </View>
 
       <Pressable style={styles.inviteRow} onPress={() => go('invite')} accessibilityRole="button">

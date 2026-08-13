@@ -1,0 +1,49 @@
+# For detailed configuration reference documentation, visit:
+# https://supabase.com/docs/guides/local-development/cli/config
+project_id = "cabana-app"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 17
+
+[db.migrations]
+enabled = true
+
+[realtime]
+enabled = true
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "cabana://"
+additional_redirect_urls = ["cabana://"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+enable_manual_linking = false
+
+[auth.email]
+enable_signup = true
+# The design's sign-up flow logs a person straight into the app with no
+# "check your email" step, so confirmation is off — matches the UX the
+# screens were built for. Turn this back on before shipping to production
+# if that's not the intended trust model.
+enable_confirmations = false
+
+[auth.sms]
+enable_signup = false
+enable_confirmations = false
+
+[functions.notify-crew]
+enabled = true
+verify_jwt = true

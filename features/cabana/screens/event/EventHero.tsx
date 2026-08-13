@@ -13,7 +13,7 @@ import { Float } from '../../components/anim';
 import { HeroGradient } from '../../components/Gradient';
 
 export function EventHero() {
-  const { active, now, go, flash } = useCabana();
+  const { active, now, go, nudge } = useCabana();
   const vibe = findVibe(active.theme);
   const date = new Date(active.date);
   const { days, hours, mins } = countdown(date.getTime() - now);
@@ -38,7 +38,7 @@ export function EventHero() {
           <Text style={styles.backGlyph}>‹</Text>
         </Pressable>
         <Pressable
-          onPress={() => flash('Nudge sent 📣')}
+          onPress={() => nudge()}
           accessibilityRole="button"
           style={styles.nudge}
         >

@@ -17,7 +17,7 @@ export function PickerSheet() {
   const close = () => setField('pickerOpen', false);
 
   const upcoming = events
-    .filter((e) => new Date(e.date).getTime() > now && !e.left)
+    .filter((e) => new Date(e.date).getTime() > now)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return (

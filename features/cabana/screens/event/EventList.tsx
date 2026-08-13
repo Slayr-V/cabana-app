@@ -4,14 +4,14 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colorFor, useCabana } from '../../state';
-import { INK, ink, PILL, WHITE } from '../../theme';
+import { resolveWho, useCabana } from '../../state';
+import { INK, ink, NO_COLOR, PILL, WHITE } from '../../theme';
 import { jakarta, outfit } from '../../type';
 import { withAlpha } from '../../utils';
 import { SwipeRow } from '../../components/SwipeRow';
 
 export function EventList() {
-  const { active, myColor, openAdd, toggleItem, removeItem } = useCabana();
+  const { active, myId, myInitial, myColor, openAdd, toggleItem, removeItem } = useCabana();
 
   const total = active.items.length + active.mine.length;
   const done =
@@ -39,7 +39,8 @@ export function EventList() {
 
       <View style={styles.rows}>
         {active.items.map((item) => {
-          const color = colorFor(item.who, myColor);
+          const who = resolveWho(item.who, active, myId, myInitial, myColor);
+          const color = who?.color ?? NO_COLOR;
           return (
             <SwipeRow
               key={item.id}
@@ -55,11 +56,9 @@ export function EventList() {
                   <Text style={[styles.name, styles.nameDone]}>{item.name}</Text>
                   <View style={[styles.whoChip, { backgroundColor: withAlpha(color, '40') }]}>
                     <View style={[styles.whoAvatar, { backgroundColor: color }]}>
-                      <Text style={styles.whoInitial}>
-                        {item.who === 'You' ? 'S' : (item.who ?? '?')[0]}
-                      </Text>
+                      <Text style={styles.whoInitial}>{who?.initial ?? '?'}</Text>
                     </View>
-                    <Text style={styles.whoLabel}>{item.who}</Text>
+                    <Text style={styles.whoLabel}>{who?.label ?? ''}</Text>
                   </View>
                 </>
               ) : (

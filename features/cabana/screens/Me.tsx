@@ -10,28 +10,37 @@ import { jakarta, outfit } from '../type';
 import { SwatchRow } from '../components/common';
 
 export function MeScreen() {
-  const { myColor, setField, signOut } = useCabana();
+  const { myName, myInitial, myColor, events, myId, pickColor, signOut } = useCabana();
   const colorName = COLOR_NAMES[myColor] ?? 'yours';
+
+  // Real counts from what's actually in the backend, rather than the
+  // design's placeholder 7 / 41 — how many events you're part of, and how
+  // many group-list things across all of them you've claimed and packed.
+  const eventCount = events.length;
+  const packedCount = events.reduce(
+    (sum, e) => sum + e.items.filter((i) => i.who === myId && i.done).length,
+    0,
+  );
 
   return (
     <View style={styles.screen}>
       <View style={styles.identity}>
         <View style={[styles.avatar, { backgroundColor: myColor }]}>
-          <Text style={styles.avatarInitial}>S</Text>
+          <Text style={styles.avatarInitial}>{myInitial}</Text>
         </View>
         <View>
-          <Text style={styles.name}>Sam</Text>
+          <Text style={styles.name}>{myName}</Text>
           <Text style={styles.colourLine}>Your colour is {colorName}</Text>
         </View>
       </View>
 
       <View style={styles.stats}>
         <View style={styles.statCard}>
-          <Text style={styles.statValue}>7</Text>
+          <Text style={styles.statValue}>{eventCount}</Text>
           <Text style={styles.statLabel}>events with the crew</Text>
         </View>
         <View style={[styles.statCard, { backgroundColor: myColor }]}>
-          <Text style={styles.statValue}>41</Text>
+          <Text style={styles.statValue}>{packedCount}</Text>
           <Text style={[styles.statLabel, { color: ink(0.55) }]}>things you actually brought</Text>
         </View>
       </View>
@@ -43,7 +52,7 @@ export function MeScreen() {
             <Text style={styles.settingValue}>{colorName}</Text>
           </View>
           <View style={styles.swatches}>
-            <SwatchRow selected={myColor} onPick={(c) => setField('myColor', c)} />
+            <SwatchRow selected={myColor} onPick={pickColor} />
           </View>
         </View>
 

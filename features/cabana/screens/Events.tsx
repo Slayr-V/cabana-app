@@ -13,16 +13,19 @@ import { Float } from '../components/anim';
 import { CardGradient } from '../components/Gradient';
 
 export function EventsScreen() {
-  const { events, now, myColor, go, openEvent, startCreate } = useCabana();
+  const { events, now, myName, myInitial, myColor, go, openEvent, startCreate } = useCabana();
 
   const upcoming = events
-    .filter((e) => new Date(e.date).getTime() > now && !e.left)
+    .filter((e) => new Date(e.date).getTime() > now)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
+  const firstName = myName.split(' ')[0] || myName;
   const greeting =
-    upcoming.length === 1
-      ? 'Hey Sam — one good thing coming up'
-      : `Hey Sam — ${upcoming.length} good things coming up`;
+    upcoming.length === 0
+      ? `Hey ${firstName} — let’s get something going`
+      : upcoming.length === 1
+        ? `Hey ${firstName} — one good thing coming up`
+        : `Hey ${firstName} — ${upcoming.length} good things coming up`;
 
   return (
     <View>
@@ -38,7 +41,7 @@ export function EventsScreen() {
             accessibilityLabel="Your profile"
             style={[styles.me, { backgroundColor: myColor }]}
           >
-            <Text style={styles.meInitial}>S</Text>
+            <Text style={styles.meInitial}>{myInitial}</Text>
           </Pressable>
         </View>
       </View>
